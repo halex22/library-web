@@ -3,7 +3,7 @@ import Book from "../models/books.js"
 export default class DataService {
   constructor() {}
 
-  getBooksData() {
+  #fetchData() {
     const data = [
       {
           "title": "Il Signore degli Anelli",
@@ -230,28 +230,45 @@ export default class DataService {
           "yop": 1847
       }
     ]
+    return data
+  }
 
+  getBooksData() {
+    return this.parseResToBooks(this.#fetchData())
   }
 
   getBooksByTitle() {
     const books = this.getBooksData()
-    books.sort((b1, b2) => {})
+    return [...books].sort((b1, b2) => b1.title.localeCompare(b2.title))
   }
 
   getBooksByYop() {
     const books = this.getBooksData()
+    return [...books].sort((b1, b2) => b1.yop - b2.yop)
+
   }
 
-  getBooksByCategory() {
+  getBooksByCategory(filter) {
     const books = this.getBooksData()
+    return [...books].filter(book => book.category === filter)
   }
 
   /**
    * 
    * @param {array} data 
    */
-  convertDataToBooks(data) {
-    const createdBooks = []
+  
+
+  /**
+   * 
+   * @param {array} rawData 
+   * @returns 
+   */
+  parseResToBooks(rawData){
+    return rawData.map(singleObject => new Book(
+        singleObject.title, singleObject.author, singleObject.isbn,
+        singleObject.category, singleObject.yop
+    ))
   }
 
 }
