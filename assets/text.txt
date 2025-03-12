@@ -1,0 +1,3 @@
+1 title
+2 published year
+3. category
