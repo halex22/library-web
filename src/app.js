@@ -48,12 +48,22 @@ function createBook(bookData) {
   return bookContainer
 }
 
-function render() {
+
+function render(dataToRender) {
   cleanUpRoot()
-  let data = service.getBooksData()
+
+  console.log(dataToRender)
+  console.log(!!dataToRender)
+
+  let data = dataToRender ?? service.getBooksData()
+  console.log(data, 'before filter')
 
   if (currentFilter !== 'Tutti') {
-    data = data.filter(book => book.category === currentFilter)
+    // data = data.filter(book => book.category === currentFilter)
+    data
+    .filter(book => book.category === currentFilter)
+    .forEach(book =>  rootDiv.appendChild(createBook(book)))
+    return 
   }
 
   data.forEach(book => rootDiv.appendChild(createBook(book)))
@@ -67,9 +77,9 @@ function renderOrderByTitle() {
   cleanUpRoot()
   let data = service.getBooksData()
 
-  if (currentFilter !== 'Tutti') {
-    data = data.filter(book => book.category === currentFilter)
-  }
+  // if (currentFilter !== 'Tutti') {
+  //   data = [...data.filter(book => book.category === currentFilter)]
+  // }
   const sortedData = data.sort((b1, b2) => b1.compareByTitle(b2))
 
   render(sortedData)
@@ -82,10 +92,9 @@ function renderOrderByTitle() {
 function renderOrderByYop() {
   cleanUpRoot()
   let data = service.getBooksData()
-
-  if (currentFilter !== 'Tutti') {
-    data = data.filter(book => book.category === currentFilter)
-  }
+  // if (currentFilter !== 'Tutti') {
+  //   data = data.filter(book => book.category === currentFilter)
+  // }
 
   const sortedData = data.sort((b1, b2) => b1.compareByYob(b2))
   render(sortedData)
@@ -112,7 +121,14 @@ function onFilterChange() {
     renderOrderByYop()
     return
   }
-  
+
+  render()
+}
+
+function resetQuey() {
+  currentFilter = 'Tutti'
+  titleR.checked = false
+  yobR.checked = false
   render()
 }
 
@@ -123,3 +139,4 @@ render()
 window.renderOrderByTitle = renderOrderByTitle
 window.renderOrderByYop = renderOrderByYop
 window.onFilterChange = onFilterChange
+window.resetQuey = resetQuey
